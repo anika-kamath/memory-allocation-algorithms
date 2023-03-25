@@ -4,7 +4,7 @@
 #define MAX 25
 
 int main() {
-    int blockSize[MAX], processSize[MAX], bestFit[MAX], fragment[MAX];
+    int blockSize[MAX], processSize[MAX], worstFit[MAX], fragment[MAX];
     int bSize, pSize, i, j, totalFragment = 0, allocated = 0;
 
     printf("Enter the number of memory blocks: ");
@@ -25,26 +25,26 @@ int main() {
         scanf("%d", &processSize[i]);
     }
 
-    // Find the best fit for each process
+    // Find the worst fit for each process
     for (i = 0; i < pSize; i++) {
-        int min = -1;
+        int max = -1;
         for (j = 0; j < bSize; j++) {
             if (processSize[i] <= blockSize[j]) {
-                if (min == -1) {
-                    min = j;
-                } else if (blockSize[j] < blockSize[min]) {
-                    min = j;
+                if (max == -1) {
+                    max = j;
+                } else if (blockSize[j] > blockSize[max]) {
+                    max = j;
                 }
             }
         }
 
-        if (min != -1) {
-            bestFit[i] = min;
-            fragment[i] = blockSize[min] - processSize[i];
-            blockSize[min] -= processSize[i];
+        if (max != -1) {
+            worstFit[i] = max;
+            fragment[i] = blockSize[max] - processSize[i];
+            blockSize[max] -= processSize[i];
             allocated++;
         } else {
-            bestFit[i] = -1;
+            worstFit[i] = -1;
             fragment[i] = -1;
         }
     }
@@ -58,8 +58,8 @@ int main() {
     printf("\nProcess No.\tProcess Size\tBlock No.\tFragmentation\n");
     for (i = 0; i < pSize; i++) {
         printf("%d\t\t%d\t\t", i+1, processSize[i]);
-        if (bestFit[i] != -1) {
-            printf("%d\t\t%d\n", bestFit[i]+1, fragment[i]);
+        if (worstFit[i] != -1) {
+            printf("%d\t\t%d\n", worstFit[i]+1, fragment[i]);
         } else {
             printf("Not Allocated\t-\n");
         }
